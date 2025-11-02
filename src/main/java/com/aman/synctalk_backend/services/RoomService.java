@@ -1,11 +1,14 @@
 package com.aman.synctalk_backend.services;
 import com.aman.synctalk_backend.dto.RoomDto;
+import com.aman.synctalk_backend.entities.Message;
 import com.aman.synctalk_backend.entities.Room;
 import com.aman.synctalk_backend.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RoomService {
@@ -45,6 +48,22 @@ public class RoomService {
             return new ResponseEntity<>("Room deleted successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Room not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<List<Message>> getMessagesByRoomId(String roomId, int page, int size) {
+        Room room = roomRepository.findByRoomId(roomId);
+        if (room != null) {
+            List<Message> messages = room.getMessages();
+
+            //pagination
+            int start = Math.max(0, messages.size() - (page + 1) * size);
+            int end = Math.min(messages.size(), start+size);
+
+            List<Message> paginatedMessages = messages.subList(start, end);
+            return new ResponseEntity<>(paginatedMessages, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
