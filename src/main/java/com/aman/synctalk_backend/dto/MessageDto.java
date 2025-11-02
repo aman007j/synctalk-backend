@@ -1,11 +1,12 @@
-package com.aman.synctalk_backend.entities;
+package com.aman.synctalk_backend.dto;
+
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class Message {
+public class MessageDto {
     private String sender;
     private String content;
-    private LocalDateTime timestamp;
+    private String roomId;
 }
